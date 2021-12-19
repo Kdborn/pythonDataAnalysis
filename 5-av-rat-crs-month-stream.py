@@ -10,62 +10,67 @@ month_course_average = data.groupby(['Month','Course Name'])['Rating'].count().u
 
 chart_def = """
 {
+
     chart: {
-        type: 'spline'
+        type: 'streamgraph',
+        marginBottom: 30,
+        zoomType: 'x'
     },
+
+
     title: {
-        text: 'Average fruit consumption during one week'
-    },
-    legend: {
-        layout: 'vertical',
+        floating: true,
         align: 'left',
-        verticalAlign: 'top',
-        x: 150,
-        y: 100,
-        floating: false,
-        borderWidth: 1,
-        backgroundColor: '#FFFFFF'
+        text: 'Review Course Rating'
+    },
+    subtitle: {
+        floating: true,
+        align: 'left',
+        y: 30,
+        text: 'Average Course Rating by Month'
     },
     xAxis: {
-        categories: [
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-            'Sunday'
-        ],
-        plotBands: [{ // visualize the weekend
-            from: 4.5,
-            to: 6.5,
-            color: 'rgba(68, 170, 213, .2)'
-        }]
+        maxPadding: 0,
+        type: 'category',
+        crosshair: true,
+        categories: [ ],
+        labels: {
+            align: 'left',
+            reserveSpace: false,
+            rotation: 270
+        },
+        lineWidth: 0,
+        margin: 20,
+        tickWidth: 0
     },
+
     yAxis: {
-        title: {
-            text: 'Fruit units'
-        }
+        visible: false,
+        startOnTick: false,
+        endOnTick: false
     },
-    tooltip: {
-        shared: true,
-        valueSuffix: ' units'
-    },
-    credits: {
+
+    legend: {
         enabled: false
     },
+
     plotOptions: {
-        areaspline: {
-            fillOpacity: 0.5
+        series: {
+            label: {
+                minFontSize: 5,
+                maxFontSize: 15,
+                style: {
+                    color: 'rgba(255,255,255,0.75)'
+                }
+            }
         }
     },
-    series: [{
-        name: 'John',
-        data: [3, 4, 3, 5, 4, 10, 12]
-    }, {
-        name: 'Jane',
-        data: [1, 3, 4, 3, 3, 5, 4]
-    }]
+
+    exporting: {
+        sourceWidth: 800,
+        sourceHeight: 600
+    }
+
 }
 """
 def app():
@@ -77,7 +82,7 @@ def app():
     hc.options.xAxis.categories = list(month_course_average.index)
     # basic structure auf the series data is a list out of dictonaries with name and data
     # template is [{'name': "name",'data': [value,value,.. ]}]
-    # create that by inner for loops
+    # create that by inner for loops 
     hc_data = [{'name':v1,'data':[v2 for v2 in month_course_average[v1]]} for v1 in month_course_average.columns]
     hc.options.series = hc_data
     return wp
